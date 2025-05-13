@@ -1,5 +1,5 @@
 
-#import "@local/vanilla:0.1.0": vanilla, par-single-spaced
+#import "@preview/vanilla:0.1.0": vanilla, par-single-spaced
 
 #show: vanilla.with(body-line-spacing: "double", body-first-line-indent: 0.5in, justified: true)
 

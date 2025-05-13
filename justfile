@@ -49,7 +49,11 @@ install-preview: (package preview_target_path)
 
 # remove @preview pre-release testing folder
 uninstall-preview:
-    rm -rf {{preview_target_path}}
+    read -p "Are you sure you want to remove {{preview_target_path}}? [y/N] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then \
+        rm -rf "{{preview_target_path}}"
+    fi
 
 # clean the "target" folder
 clean:
