@@ -1,12 +1,3 @@
-#let normal-table(
-  ..args,
-  fill: (x, y) => {
-    if y == 0 { silver }
-  },
-) = {
-  table(fill: fill, ..args)
-}
-
 // Creates a box with a shadow effect
 // dx, dy: offset of the shadow (default: 3pt)
 #let shadow-box(..args, content, fill: white, stroke: 1pt + black, dx: 3pt, dy: 3pt) = {
@@ -173,7 +164,12 @@
 
   ///////////////////////////////////////////////////////////
   // Table
-  set table(inset: (top: .1em, left: .5em, right: .5em, bottom: .5em))
+  set table(
+    inset: (top: .1em, left: .5em, right: .5em, bottom: .5em),
+    fill: (x, y) => {
+      if y == 0 { silver }
+    },
+  )
   show table.cell: it => {
     par-single-spaced(it)
   }

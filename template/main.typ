@@ -1,5 +1,5 @@
 
-#import "@preview/vanilla:0.1.0": vanilla, normal-table, par-single-spaced
+#import "@local/vanilla:0.1.0": vanilla, par-single-spaced
 
 #show: vanilla.with(body-line-spacing: "double", body-first-line-indent: 0.5in, justified: true)
 
@@ -31,14 +31,12 @@
 
 #lorem(50)
 
-#normal-table(
+#table(
   align: left,
   columns: 2,
   table.header([*Heading 1*], [*Heading 2*]),
-  [Column 1],
-  [Column 2],
-  [#lorem(10)],
-  [#lorem(20)],
+  [Column 1], [Column 2],
+  [#lorem(10)], [#lorem(20)],
 )
 
 #lorem(50)
