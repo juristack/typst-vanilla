@@ -2,6 +2,7 @@
 name = "vanilla"
 version = "0.1.0"
 entrypoint = "src/lib.typ"
+repository = "https://github.com/juristack/typst-vanilla"
 authors = ["David Conrad"]
 license = "MIT"
 description = "A vanilla Typst package. Aims for minimilist styling fimilar to class MS Word defaults."

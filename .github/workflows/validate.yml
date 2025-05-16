@@ -1,0 +1,75 @@
+name: Validate Package
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/typst-publish.yml'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/typst-publish.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl make grep
+
+      - name: Install just command runner
+        uses: extractions/setup-just@v1
+        
+      - name: Run package validation
+        run: |
+          chmod +x ./scripts/validate-package.sh
+          if ! ./scripts/validate-package.sh; then
+            echo "::error::Package validation failed"
+            exit 1
+          fi
+          
+      - name: Check typst.toml
+        run: |
+          # Check if all required fields exist in typst.toml
+          for field in name version entrypoint authors license description; do
+            if ! grep -q "$field" typst.toml; then
+              echo "::error::Missing required field '$field' in typst.toml"
+              exit 1
+            fi
+          done
+          
+          # Extract version for verification
+          TOML_VERSION=$(grep 'version' typst.toml | sed -E 's/version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+          if [ -z "$TOML_VERSION" ]; then
+            echo "::error::Could not extract version from typst.toml"
+            exit 1
+          fi
+          
+          echo "✅ typst.toml validation successful, version: $TOML_VERSION"
+          
+      - name: Package the library
+        run: |
+          mkdir -p target
+          just package target
+          echo "Package files prepared in target directory"
+          ls -la target
+          
+      - name: Verify packaged files
+        run: |
+          # Check essential files in the packaged output
+          for file in typst.toml README.md LICENSE src/lib.typ template/main.typ thumbnail.png; do
+            if [ ! -f "target/$file" ]; then
+              echo "::error::Missing essential file '$file' in packaged output"
+              exit 1
+            fi
+          done
+          
+          echo "✅ All essential files are present in the packaged output"

@@ -1,0 +1,125 @@
+name: Publish to Typst Packages
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on tags that start with 'v' (e.g., v0.1.0)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for proper versioning
+
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+          
+          # Create a package name variable for reuse
+          PACKAGE_NAME="vanilla"
+          echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl make grep
+
+      - name: Install just command runner
+        uses: extractions/setup-just@v1
+        
+      - name: Package the library
+        run: |
+          mkdir -p target
+          just package target
+          echo "Package files prepared in target directory"
+          ls -la target
+
+      - name: Validate package
+        run: |
+          # Ensure typst.toml has matching version
+          TOML_VERSION=$(grep 'version' typst.toml | sed -E 's/version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+          if [ "$TOML_VERSION" != "${{ steps.get_version.outputs.version }}" ]; then
+            echo "::error::Version in typst.toml ($TOML_VERSION) does not match tag version (${{ steps.get_version.outputs.version }})"
+            exit 1
+          fi
+          
+          # Run validation script to ensure all required files are present
+          chmod +x ./scripts/validate-package.sh
+          if ! ./scripts/validate-package.sh; then
+            echo "::error::Package validation failed"
+            exit 1
+          fi
+
+      - name: Checkout typst/packages repository
+        uses: actions/checkout@v4
+        with:
+          repository: typst/packages
+          path: typst-packages
+
+      - name: Check if package already exists
+        id: check_exists
+        run: |
+          PACKAGE_DIR="typst-packages/packages/preview/${{ steps.get_version.outputs.package_name }}/${{ steps.get_version.outputs.version }}"
+          if [ -d "$PACKAGE_DIR" ]; then
+            echo "::warning::Package ${{ steps.get_version.outputs.package_name }} ${{ steps.get_version.outputs.version }} already exists in typst/packages repository"
+            echo "exists=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "exists=false" >> $GITHUB_OUTPUT
+
+      - name: Create package directory and copy files
+        if: steps.check_exists.outputs.exists == 'false'
+        run: |
+          mkdir -p "typst-packages/packages/preview/${{ steps.get_version.outputs.package_name }}/${{ steps.get_version.outputs.version }}"
+          cp -r target/* "typst-packages/packages/preview/${{ steps.get_version.outputs.package_name }}/${{ steps.get_version.outputs.version }}/"
+          echo "Package directory created and files copied"
+          
+      - name: Setup git config
+        if: steps.check_exists.outputs.exists == 'false'
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+
+      - name: Create pull request
+        if: steps.check_exists.outputs.exists == 'false'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: typst-packages
+          commit-message: "Add ${{ steps.get_version.outputs.package_name }} ${{ steps.get_version.outputs.version }}"
+          title: "Add ${{ steps.get_version.outputs.package_name }} ${{ steps.get_version.outputs.version }}"
+          body: |
+            This PR adds the ${{ steps.get_version.outputs.package_name }} package version ${{ steps.get_version.outputs.version }}.
+            
+            ## Package Details
+            - Name: ${{ steps.get_version.outputs.package_name }}
+            - Version: ${{ steps.get_version.outputs.version }}
+            - Description: A vanilla Typst package with minimalist styling familiar to MS Word defaults.
+            - Categories: paper
+            
+            ## Checklist
+            - [x] The package version in typst.toml matches the version in the directory name
+            - [x] The package contains a README.md file
+            - [x] The package is licensed under the MIT license
+            - [x] The package follows the submission guidelines in the typst/packages repository
+            - [x] The package was tested locally before submission
+          branch: add-${{ steps.get_version.outputs.package_name }}-${{ steps.get_version.outputs.version }}
+          base: main
+          
+      - name: PR result
+        if: steps.check_exists.outputs.exists == 'false'
+        run: echo "Pull request created! Please check the typst/packages repository for your PR."
+        
+      - name: Package already exists message
+        if: steps.check_exists.outputs.exists == 'true'
+        run: echo "Package ${{ steps.get_version.outputs.package_name }} ${{ steps.get_version.outputs.version }} already exists in the typst/packages repository. No PR created."
