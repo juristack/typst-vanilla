@@ -1,17 +1,3 @@
-// Creates a box with a shadow effect
-// dx, dy: offset of the shadow (default: 3pt)
-#let shadow-box(..args, content, fill: white, stroke: 1pt + black, dx: 3pt, dy: 3pt) = {
-  box(
-    layout(size => {
-      let content = box(fill: fill, width: size.width, stroke: stroke, ..args, content)
-      let (height,) = measure(content)
-      let shadow = box(fill: silver, width: size.width, height: height, ..args)
-      place(dx: dx, dy: dy, shadow)
-      content
-    }),
-  )
-}
-
 #let par-single-spaced(..args, body) = {
   set par(leading: .15em, ..args)
   body
@@ -35,14 +21,28 @@
   justified: false,
   doc,
 ) = {
-  let par-single-spaced(body, ..args) = {
-    set par(leading: .15em, ..args)
-    body
-  }
+  // let par-single-spaced(body, ..args) = {
+  //   set par(leading: .15em, ..args)
+  //   body
+  // }
 
-  let par-double-spaced(body, ..args) = {
-    set par(leading: 1.3em, ..args)
-    body
+  // let par-double-spaced(body, ..args) = {
+  //   set par(leading: 1.3em, ..args)
+  //   body
+  // }
+
+  // Creates a box with a shadow effect
+  // dx, dy: offset of the shadow (default: 3pt)
+  let shadow-box(..args, content, fill: white, stroke: 1pt + black, dx: 3pt, dy: 3pt) = {
+    box(
+      layout(size => {
+        let content = box(fill: fill, width: size.width, stroke: stroke, ..args, content)
+        let (height,) = measure(content)
+        let shadow = box(fill: silver, width: size.width, height: height, ..args)
+        place(dx: dx, dy: dy, shadow)
+        content
+      }),
+    )
   }
 
   ///////////////////////////////////////////////////////////
