@@ -15,6 +15,7 @@ files := '''
     src/
     examples/
     template/
+    scripts/
     typst.toml
     LICENSE
     README.md
