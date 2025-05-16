@@ -10,22 +10,17 @@ name := `cat typst.toml | grep '^name = ' | cut -d'"' -f2`
 version := `cat typst.toml | grep '^version = ' | cut -d'"' -f2`
 preview_target_path := data_dir / "typst/packages/preview" / name / version
 
-# enumerate all the files in the current directory except hidden dotfiles and
-# what is listed in .typstignore
-files := `find . -type f | grep -v '^\./\.' | while read file; do \
-    ignored=false; \
-    if [ -f ".typstignore" ]; then \
-        while IFS= read -r pattern || [[ -n "$pattern" ]]; do \
-            if [[ -n "$pattern" && "$pattern" != "#"* && "$file" =~ $pattern ]]; then \
-                ignored=true; \
-                break; \
-            fi; \
-        done < .typstignore; \
-    fi; \
-    if [[ "$ignored" == "false" ]]; then \
-        echo "${file#./}"; \
-    fi; \
-done`
+# List of all files that get packaged
+files := '''
+    src/
+    examples/
+    template/
+    typst.toml
+    LICENSE
+    README.md
+    CHANGELOG.md
+    thumbnail.png
+'''
 
 [private]
 default:
@@ -38,7 +33,7 @@ package target="target":
         if [ -n "$file" ]; then \
             dir="$(dirname "{{target}}/$file")"; \
             mkdir -p "$dir"; \
-            cp "$file" "{{target}}/$file"; \
+            cp -r "$file" "{{target}}/$file"; \
             echo "Copied $file"; \
         fi \
     done
@@ -54,6 +49,10 @@ uninstall-preview:
     if [[ $REPLY =~ ^[Yy]$ ]]; then \
         rm -rf "{{preview_target_path}}"
     fi
+
+# validate the package
+validate:
+    ./scripts/validate-package.sh
 
 # clean the "target" folder
 clean:
