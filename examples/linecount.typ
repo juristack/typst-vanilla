@@ -1,4 +1,4 @@
-#import "@local/vanilla:0.1.0": vanilla
+#import "@preview/vanilla:0.1.1": vanilla
 
 #show: vanilla.with(
   body-line-spacing: "double",

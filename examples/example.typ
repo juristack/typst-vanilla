@@ -1,4 +1,4 @@
-#import "@preview/vanilla:0.1.0": vanilla, par-single-spaced, par-double-spaced
+#import "@preview/vanilla:0.1.1": vanilla, par-single-spaced, par-double-spaced
 
 // Apply the vanilla style to the document
 #show: vanilla.with(

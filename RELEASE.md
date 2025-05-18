@@ -34,7 +34,7 @@ just install-preview
 Create a test document that imports your package from the preview namespace and verify that everything works correctly:
 
 ```typst
-#import "@preview/vanilla:0.1.0": vanilla
+#import "@preview/vanilla:0.1.1": vanilla
 
 #show: vanilla.with(
   body-line-spacing: "double"
@@ -76,7 +76,7 @@ Once the GitHub Action completes, it will create a pull request in the typst/pac
 ### After Approval
 
 After your package is approved and merged:
-- It will be available to all Typst users via `#import "@preview/vanilla:0.1.0"`
+- It will be available to all Typst users via `#import "@preview/vanilla:0.1.1"`
 - It will appear in the [Typst Universe](https://typst.app/universe/)
 
 ## Troubleshooting
