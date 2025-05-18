@@ -1,5 +1,3 @@
-#!/bin/zsh
-
 echo "🔍 Validating vanilla Typst package..."
 echo ""
 
