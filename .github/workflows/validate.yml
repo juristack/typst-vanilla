@@ -20,14 +20,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl make grep
-
       - name: Install just command runner
         uses: extractions/setup-just@v1
+
+      - name: Setup typst
+        uses: typst-community/setup-typst@v3
+        with:
+          typst-version: latest
         
+      - name: List scripts directory for debugging
+        run: ls -la ./scripts/
+
       - name: Run package validation
         run: |
           chmod +x ./scripts/validate-package.sh
