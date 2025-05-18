@@ -26,10 +26,7 @@ A vanilla Typst package that aims for minimalist and clean styling similar to co
 == Heading 2
 === Heading 3
 
-#par-double-spaced[
-  This paragraph will be double-spaced with indent.
-  #lorem(50)
-]
+This paragraph will be double-spaced with indent. #lorem(50)
 
 #par-single-spaced[
   This paragraph will be single-spaced.
