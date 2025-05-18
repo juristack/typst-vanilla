@@ -28,9 +28,11 @@ jobs:
         with:
           typst-version: latest
         
+      - name: List scripts directory for debugging
+        run: ls -la ./scripts/
+
       - name: Run package validation
         run: |
-          ls -la
           chmod +x ./scripts/validate-package.sh
           if ! ./scripts/validate-package.sh; then
             echo "::error::Package validation failed"
