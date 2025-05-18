@@ -54,7 +54,7 @@ jobs:
       - name: Package the library
         run: |
           mkdir -p target
-          just package target
+          just package "target/${PKG_VERSION}"
           echo "Package files prepared in target directory"
           ls -la target
 
@@ -84,10 +84,7 @@ jobs:
       - name: Release package
         run: |
           mkdir -p "typst-packages/${{ env.PATH_PREFIX }}/$PKG_NAME"
-          mv "target/${PKG_NAME}/${PKG_VERSION}" "typst-packages/${{ env.PATH_PREFIX }}/${PKG_NAME}"
-          rmdir "target/${PKG_NAME}"
-          rmdir target
-
+          mv "target/${PKG_VERSION}" "typst-packages/${{ env.PATH_PREFIX }}/${PKG_NAME}"
           GIT_USER_NAME="$(git log -1 --pretty=format:'%an')"
           GIT_USER_EMAIL="$(git log -1 --pretty=format:'%ae')"
 
