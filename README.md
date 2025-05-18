@@ -1,6 +1,6 @@
-# Vanilla Typst Theme
+# Vanilla Typst
 
-A vanilla Typst theme that aims for minimalist and clean styling similar to conventional word processor defaults.
+A vanilla Typst package that aims for minimalist and clean styling similar to conventional word processor defaults.
 
 ## Features
 
