@@ -30,13 +30,13 @@ jobs:
       - name: Extract version from tag
         id: get_version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Extracted version: $VERSION"
+          PKG_VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$PKG_VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $PKG_VERSION"
           
           # Create a package name variable for reuse
-          PACKAGE_NAME="vanilla"
-          echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+          PKG_NAME="vanilla"
+          echo "package_name=$PKG_NAME" >> $GITHUB_OUTPUT
       
       - name: Install dependencies
         run: |
