@@ -2,11 +2,14 @@
 #import "@preview/vanilla:0.2.0": body, vanilla
 
 #show: vanilla.with(
-  base-font: "Times New Roman",
   styles: (
-    body: (spacing: "double", first-line-indent: 0.5in),
+    body: (
+      font: ("Times New Roman", "Libertinus Serif"),
+      spacing: "double",
+      first-line-indent: 0.5in,
+      justify: true,
+    ),
   ),
-  justified: true,
 )
 
 = HEADING 1

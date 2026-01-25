@@ -1,7 +1,6 @@
 #import "@preview/vanilla:0.2.0": vanilla
 
 #show: vanilla.with(
-  base-font: "Times New Roman",
   styles: (
     body: (spacing: "double", font: "Arial"),
   ),

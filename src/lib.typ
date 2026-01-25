@@ -43,9 +43,6 @@
 ///
 #let vanilla(
   margins: (left: 1in, right: 1in, top: 1in, bottom: 1in),
-  base-font: "Libertinus Serif",
-  base-size: 12pt,
-  justified: false,
   styles: (:),
   doc,
 ) = {
@@ -54,10 +51,11 @@
   //
   styles.body = (
     (
-      font: auto,
-      size: auto,
+      font: "Libertinus Serif",
+      size: 12pt,
       first-line-indent: 0in,
       spacing: "single",
+      justify: left,
       after: 0pt,
     )
       + styles.at("body", default: (:))
@@ -111,44 +109,37 @@
 
   ///////////////////////////////////////////////////////////
   // Normalize text
-  if styles.body.font == auto {
-    styles.body.font = base-font
-  }
-
-  if styles.body.size == auto {
-    styles.body.size = base-size
-  }
 
   if styles.heading.font == auto {
-    styles.heading.font = base-font
+    styles.heading.font = styles.body.font
   }
 
   if styles.heading.size == auto {
-    styles.heading.size = base-size
+    styles.heading.size = styles.body.size
   }
 
   if styles.footnote.font == auto {
-    styles.footnote.font = base-font
+    styles.footnote.font = styles.body.font
   }
 
   if styles.footnote.size == auto {
-    styles.footnote.size = base-size
+    styles.footnote.size = styles.body.size
   }
 
   if styles.list.font == auto {
-    styles.list.font = base-font
+    styles.list.font = styles.body.font
   }
 
   if styles.list.size == auto {
-    styles.list.size = base-size
+    styles.list.size = styles.body.size
   }
 
   if styles.quote.font == auto {
-    styles.quote.font = base-font
+    styles.quote.font = styles.body.font
   }
 
   if styles.quote.size == auto {
-    styles.quote.size = base-size
+    styles.quote.size = styles.body.size
   }
 
   set text(
@@ -161,7 +152,7 @@
   ///////////////////////////////////////////////////////////
   /// resolve-spacing
   ///
-  let resolve-spacing = spacing => {
+  let resolve-spacing = (spacing, size) => {
     if spacing == "single" {
       return (.167em, .167em)
     } else if spacing == "double" {
@@ -173,7 +164,7 @@
       }
       return (multiple * 1em, multiple * 1em)
     } else if type(spacing) == length {
-      return ((spacing - base-size) / base-size * 1em, (spacing - base-size) / base-size * 1em)
+      return ((spacing - -size) / -size * 1em, (spacing - -size) / -size * 1em)
     } else {
       panic("Invalid `spacing`: " + spacing)
     }
@@ -182,17 +173,18 @@
   ///////////////////////////////////////////////////////////
   // Paragraph spacing (single or double-spacing)
 
-  let (body-leading, body-spacing) = resolve-spacing(styles.body.spacing)
+  let (body-leading, body-spacing) = resolve-spacing(styles.body.spacing, styles.body.size)
 
   set par(
     leading: body-leading,
-    justify: true,
+    spacing: body-spacing,
+    justify: styles.body.justify,
     first-line-indent: (amount: styles.body.first-line-indent, all: true),
   )
 
   ///////////////////////////////////////////////////////////
   // Bullet list (single-spacing, 0.5in padding)
-  let (list-leading, list-spacing) = resolve-spacing(styles.list.spacing)
+  let (list-leading, list-spacing) = resolve-spacing(styles.list.spacing, styles.list.spacing)
 
   set list(body-indent: 1em)
 

@@ -5,7 +5,6 @@
   styles: (
     body: (spacing: "double", first-line-indent: 0.5in),
   ),
-  justified: false,
 )
 
 = Heading 1
