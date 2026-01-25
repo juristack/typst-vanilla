@@ -1,11 +1,17 @@
 
-#import "@preview/vanilla:0.1.1": vanilla, par-single-spaced
+#import "@preview/vanilla:0.2.0": body, par-single-spaced, vanilla
 
-#show: vanilla.with(body-line-spacing: "double", body-first-line-indent: 0.5in, justified: true)
+#show: vanilla.with(
+  base-font: "Times New Roman",
+  styles: (
+    body: (spacing: "double", first-line-indent: 0.5in),
+  ),
+  justified: true,
+)
 
 = HEADING 1
 
-== Heading 2
+== Heading 2: #lorem(20)
 
 === Heading 3
 
@@ -21,9 +27,9 @@
 
 + #lorem(20) #footnote[#lorem(20)]
 
-- Bullet 1
+- *Bullet 1*: #lorem(50)
 
-- Bullet 2
+- *Bullet 2*
 
 #lorem(50) #footnote[#lorem(20)]
 
@@ -58,7 +64,7 @@
 
 #lorem(50) #footnote[https://google.com]
 
-#par-single-spaced(first-line-indent: 0in)[
+#body(spacing: "single", first-line-indent: 0in)[
   #lorem(50)
 ]
 

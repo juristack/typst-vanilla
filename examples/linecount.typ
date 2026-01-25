@@ -1,13 +1,11 @@
-#import "@preview/vanilla:0.1.1": vanilla
+#import "@preview/vanilla:0.2.0": vanilla
 
 #show: vanilla.with(
-  body-line-spacing: "double",
-  body-font-family: "Times New Roman",
+  base-font: "Times New Roman",
+  styles: (
+    body: (spacing: "double"),
+  ),
 )
 
-#set par.line(numbering: "1:")
-#for i in range(1, 25) {
-  lorem(10)
-  linebreak()
-}
-
+#set par.line(numbering: "1")
+#lorem(500)

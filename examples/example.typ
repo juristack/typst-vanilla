@@ -1,23 +1,23 @@
-#import "@preview/vanilla:0.1.1": vanilla, par-single-spaced, par-double-spaced
+#import "@preview/vanilla:0.2.0": body, vanilla
 
 // Apply the vanilla style to the document
 #show: vanilla.with(
-  body-line-spacing: "double",
-  body-first-line-indent: 0.5in,
-  justified: true,
+  styles: (
+    body: (spacing: "double", first-line-indent: 0.5in),
+  ),
+  justified: false,
 )
 
 = Heading 1
 == Heading 2
 === Heading 3
 
-#par-double-spaced[
+#body(spacing: "double")[
   This paragraph will be double-spaced with indent.
   #lorem(50)
 ]
 
-#par-single-spaced[
+#body(spacing: "single")[
   This paragraph will be single-spaced.
   #lorem(20)
 ]
-

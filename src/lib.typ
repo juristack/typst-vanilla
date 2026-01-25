@@ -8,81 +8,192 @@
   body
 }
 
+#let body(..style, it) = context {
+  let spacing = style.at("spacing", default: false)
+  let (leading, spacing) = if spacing == "single" {
+    (.167em, .167em)
+  } else if spacing == "double" {
+    (1.33em, 1.33em)
+  } else if type(spacing) == int {
+    let multiple = spacing - 1
+    if multiple < 0 {
+      panic("`spacing` cannot be a multiple less than one")
+    }
+    (multiple * 1em, multiple * 1em)
+  } else if type(spacing) == length {
+    let size = text.size
+    ((spacing - size) / size * 1em, (spacing - size) / size * 1em)
+  } else if spacing == false {
+    (par.leading, par.spacing)
+  } else {
+    panic("Invalid `spacing`: " + spacing)
+  }
+
+  let indent = style.at("first-line-indent", default: par.first-line-indent)
+  if type(indent) == dictionary {
+    indent = indent.amount
+  }
+
+  [
+    #set par(leading: leading)
+    #set par(spacing: spacing)
+    #set par(first-line-indent: (amount: indent, all: true))
+    #it
+  ]
+}
+
 ///////////////////////////////////////////////////////////
 #let vanilla(
   margins: (left: 1in, right: 1in, top: 1in, bottom: 1in),
-  body-font-family: "Libertinus Serif",
-  body-font-size: 12pt,
-  body-line-spacing: "single",
-  body-first-line-indent: 0in,
-  footnote-font-size: 10pt,
-  footnote-line-spacing: "single",
-  list-line-spacing: "single",
+  base-font: "Libertinus Serif",
+  base-size: 12pt,
   justified: false,
+  styles: (:),
   doc,
 ) = {
-  // let par-single-spaced(body, ..args) = {
-  //   set par(leading: .15em, ..args)
-  //   body
-  // }
-
-  // let par-double-spaced(body, ..args) = {
-  //   set par(leading: 1.3em, ..args)
-  //   body
-  // }
-
-  // Creates a box with a shadow effect
-  // dx, dy: offset of the shadow (default: 3pt)
-  let shadow-box(..args, content, fill: white, stroke: 1pt + black, dx: 3pt, dy: 3pt) = {
-    box(
-      layout(size => {
-        let content = box(fill: fill, width: size.width, stroke: stroke, ..args, content)
-        let (height,) = measure(content)
-        let shadow = box(fill: silver, width: size.width, height: height, ..args)
-        place(dx: dx, dy: dy, shadow)
-        content
-      }),
-    )
-  }
-
   ///////////////////////////////////////////////////////////
-  // Set the page to one inch margins on all sides.
-  set page(
-    paper: "us-letter",
-    margin: margins,
+  // Set defaults
+  styles.body = (
+    (
+      font: auto,
+      size: auto,
+      first-line-indent: 0in,
+      spacing: "single",
+      after: 0pt,
+    )
+      + styles.at("body", default: (:))
+  )
+  styles.heading = (
+    (
+      font: auto,
+      size: auto,
+      after: 1em,
+    )
+      + styles.at("heading", default: (:))
+  )
+  styles.footnote = (
+    (
+      font: auto,
+      size: 10pt,
+      spacing: "single",
+      after: 0pt,
+    )
+      + styles.at("footnote", default: (:))
+  )
+  styles.list = (
+    (
+      font: auto,
+      size: auto,
+      spacing: "single",
+      after: 0pt,
+    )
+      + styles.at("list", default: (:))
+  )
+  styles.enum = (
+    (
+      font: auto,
+      size: auto,
+      spacing: "single",
+      after: 0pt,
+    )
+      + styles.at("enum", default: (:))
+  )
+  styles.quote = (
+    (
+      font: auto,
+      size: auto,
+      spacing: "single",
+      padding: 1in,
+      after: 0pt,
+    )
+      + styles.at("quote", default: (:))
   )
 
+
   ///////////////////////////////////////////////////////////
-  // Normalize text placement
+  // Normalize text
   set text(
-    font: body-font-family,
-    size: body-font-size, // 1pt factor allows for setting font with an integer in a configuration file
+    font: base-font,
+    size: base-size,
     top-edge: 1em,
     bottom-edge: "baseline",
   )
 
+  if styles.body.font == auto {
+    styles.body.font = base-font
+  }
+
+  if styles.body.size == auto {
+    styles.body.size = base-size
+  }
+
+  if styles.heading.font == auto {
+    styles.heading.font = base-font
+  }
+
+  if styles.heading.size == auto {
+    styles.heading.size = base-size
+  }
+
+  if styles.footnote.font == auto {
+    styles.footnote.font = base-font
+  }
+
+  if styles.footnote.size == auto {
+    styles.footnote.size = base-size
+  }
+
+  if styles.list.font == auto {
+    styles.list.font = base-font
+  }
+
+  if styles.list.size == auto {
+    styles.list.size = base-size
+  }
+
+  if styles.quote.font == auto {
+    styles.quote.font = base-font
+  }
+
+  if styles.quote.size == auto {
+    styles.quote.size = base-size
+  }
+
+  let resolve-spacing = spacing => {
+    if spacing == "single" {
+      return (.167em, .167em)
+    } else if spacing == "double" {
+      return (1.33em, 1.33em)
+    } else if type(spacing) == int {
+      let multiple = spacing - 1
+      if multiple < 0 {
+        panic("`spacing` cannot be a multiple less than one")
+      }
+      return (multiple * 1em, multiple * 1em)
+    } else if type(spacing) == length {
+      return ((spacing - base-size) / base-size * 1em, (spacing - base-size) / base-size * 1em)
+    } else {
+      panic("Invalid `spacing`: " + spacing)
+    }
+  }
+
   ///////////////////////////////////////////////////////////
   // Paragraph spacing (single or double-spacing)
+
+  let (body-leading, body-spacing) = resolve-spacing(styles.body.spacing)
+
   set par(
-    leading: 1.3em,
+    leading: body-leading,
     justify: true,
-    first-line-indent: (amount: body-first-line-indent, all: true),
+    first-line-indent: (amount: styles.body.first-line-indent, all: true),
   )
-
-  let body-leading = .15em
-  if body-line-spacing == "double" {
-    body-leading = 1.3em
-  }
-  set par(leading: body-leading, justify: justified)
-
-  let list-leading = .15em
-  if list-line-spacing == "double" {
-    list-leading = 1.3em
-  }
 
   ///////////////////////////////////////////////////////////
   // Bullet list (single-spacing, 0.5in padding)
+  let (list-leading, list-spacing) = resolve-spacing(styles.list.spacing)
+
   set list(body-indent: 1em)
+
   show list: it => {
     set par(leading: list-leading)
     block(inset: (left: 0.5in, right: 0.5in), it)
@@ -100,18 +211,18 @@
   // Heading styling
   show heading: it => [
 
-    #set text(size: body-font-size, top-edge: 1em, bottom-edge: "baseline")
+    #set text(size: styles.heading.size, top-edge: 1em, bottom-edge: "baseline")
 
     #if counter(heading).get().len() == 1 {
-      block(width: 100%, above: 1.3em, below: 1.3em)[
+      block(width: 100%, above: auto, below: styles.heading.after)[
         #set align(center)
-        #set par(leading: .15em, justify: false, first-line-indent: 0em)
+        #set par(leading: .167em, justify: false, first-line-indent: 0em)
         #it.body
       ]
     } else {
       let indent = 0.5in * (counter(heading).get().len() - 1)
-      block(inset: (left: indent), above: 1.3em, below: 1.3em)[
-        #set par(leading: .15em, justify: false, first-line-indent: 0em)
+      block(inset: (left: indent), above: auto, below: styles.heading.after)[
+        #set par(leading: .167em, justify: false, first-line-indent: 0em)
         #place(dx: -0.5in, counter(heading).display())
         #it.body
       ]
@@ -122,21 +233,9 @@
   // Heading mumbering
   set heading(
     numbering: (..numbers) => {
-      let level = numbers.pos().len()
-      if (level == 1) {
-        return none
-      }
-      if (level == 2) {
-        return numbering("I.", numbers.pos().at(level - 1))
-      } else if (level == 3) {
-        return numbering("A.", numbers.pos().at(level - 1))
-      } else if (level == 4) {
-        return numbering("1.", numbers.pos().at(level - 1))
-      } else if (level == 5) {
-        return numbering("a.", numbers.pos().at(level - 1))
-      } else {
-        return numbering("(1)", numbers.pos().at(level - 1))
-      }
+      let level = numbers.pos().len() - 1
+      let heading-numbering = (none, "I.", "A.", "1.", "a.", "(1)")
+      return numbering(heading-numbering.at(level), numbers.pos().at(level))
     },
   )
 
@@ -146,7 +245,7 @@
   set footnote.entry(indent: 0em)
   show footnote.entry: it => {
     set par(leading: .15em, justify: true)
-    set text(size: footnote-font-size, top-edge: 1em, bottom-edge: 0em)
+    set text(size: styles.footnote.size, top-edge: 1em, bottom-edge: 0em)
     h(1em)
     it.note
     h(0.5em)
@@ -156,10 +255,10 @@
   ///////////////////////////////////////////////////////////
   // Blockquote
   show quote: it => {
-    set text(size: 12pt, top-edge: 1em, bottom-edge: "baseline")
-    set par(leading: .15em, justify: true)
-    set block(above: 1.3em, below: 1.3em)
-    pad(left: 1.0in, right: 1.0in, it.body)
+    set text(size: styles.quote.size, top-edge: 1em, bottom-edge: "baseline")
+    set par(leading: .167em, justify: true)
+    set block(above: 1.33em, below: 1.33em)
+    pad(left: styles.quote.padding, right: styles.quote.padding, it.body)
   }
 
   ///////////////////////////////////////////////////////////
@@ -171,19 +270,34 @@
     },
   )
   show table.cell: it => {
-    par-single-spaced(it)
+    par-single-spaced(justify: false, it)
   }
 
   ///////////////////////////////////////////////////////////
   // Figure
+
+  // Creates a box with a shadow effect
+  // dx, dy: offset of the shadow (default: 3pt)
+  let shadow-box(..args, content, fill: white, stroke: 1pt + black, dx: 3pt, dy: 3pt) = {
+    box(
+      layout(size => {
+        let content = box(fill: fill, width: size.width, stroke: stroke, ..args, content)
+        let (height,) = measure(content)
+        let shadow = box(fill: silver, width: size.width, height: height, ..args)
+        place(dx: dx, dy: dy, shadow)
+        content
+      }),
+    )
+  }
+
   set figure(supplement: none)
   show figure: it => {
     {
-      set text(top-edge: "cap-height", bottom-edge: 0pt, size: 12pt)
-      set par(leading: .6em, justify: false)
+      set text(top-edge: "cap-height", bottom-edge: 0pt, size: styles.body.size)
+      set par(leading: .6em, justify: false, spacing: body-spacing)
       shadow-box(inset: 1em, radius: 3pt, it.body)
     }
-    set text(top-edge: "cap-height", bottom-edge: 0pt, size: 12pt)
+    set text(top-edge: "cap-height", bottom-edge: 0pt, size: styles.body.size)
     align(center, it.caption)
   }
 
