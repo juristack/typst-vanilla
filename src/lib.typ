@@ -55,7 +55,7 @@
       size: 12pt,
       first-line-indent: 0in,
       spacing: "single",
-      justify: left,
+      justify: false,
       after: 0pt,
     )
       + styles.at("body", default: (:))
@@ -164,7 +164,7 @@
       }
       return (multiple * 1em, multiple * 1em)
     } else if type(spacing) == length {
-      return ((spacing - -size) / -size * 1em, (spacing - -size) / -size * 1em)
+      return ((spacing - size) / size * 1em, (spacing - size) / size * 1em)
     } else {
       panic("Invalid `spacing`: " + spacing)
     }

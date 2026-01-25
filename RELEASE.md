@@ -37,7 +37,7 @@ Create a test document that imports your package from the preview namespace and 
 #import "@preview/vanilla:0.1.1": vanilla
 
 #show: vanilla.with(
-  body-line-spacing: "double"
+  styles: (body: (spacing:"double")),
 )
 
 = Test Document
