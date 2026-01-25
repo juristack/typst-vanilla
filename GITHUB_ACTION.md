@@ -1,9 +1,19 @@
-# GitHub Action for Typst Package Publishing
+# GitHub Actions for Typst Package Publishing
 
-This repository includes GitHub Actions for:
+This repository includes GitHub Actions for automated package validation and publishing.
 
-1. **Validation** - Runs on every push and PR to validate the package.
-2. **Publishing** - Creates a PR to typst/packages when a version tag is pushed.
+## What's Included
+
+1. **GitHub Action Workflows**:
+   - `.github/workflows/typst-publish.yml` - Creates a PR to typst/packages when a tag is pushed
+   - `.github/workflows/validate.yml` - Validates the package on every push and PR
+
+2. **Documentation**:
+   - `RELEASE.md` - Detailed release process guide
+   - `CHANGELOG.md` - Track changes between versions
+
+3. **Validation Script**:
+   - `validate-package.sh` - Checks that your package meets all requirements
 
 ## Quick Start
 
@@ -14,12 +24,18 @@ To publish a new version:
 3. Create and push a tag: `git tag v0.1.0 && git push origin v0.1.0`
 4. GitHub Action will create a PR to github.com/typst/packages
 
-## Action Details
+## How It Works
 
 The publishing action:
 - Validates your package and version
 - Packages files using your justfile
 - Creates a PR to typst/packages with proper formatting
+
+## Important Notes
+
+- The GitHub Action uses the `peter-evans/create-pull-request` action which requires `GITHUB_TOKEN` permissions
+- For full functionality, make sure your repository has proper permissions configured
+- The workflow uses your `justfile` to package the files before submission
 
 ## Troubleshooting
 
