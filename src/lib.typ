@@ -1,13 +1,6 @@
-#let par-single-spaced(..args, body) = {
-  set par(leading: .15em, ..args)
-  body
-}
-
-#let par-double-spaced(..args, body) = {
-  set par(leading: 1.3em, ..args)
-  body
-}
-
+///////////////////////////////////////////////////////////
+/// body()
+///
 #let body(..style, it) = context {
   let spacing = style.at("spacing", default: false)
   let (leading, spacing) = if spacing == "single" {
@@ -34,15 +27,20 @@
     indent = indent.amount
   }
 
+  let justify = style.at("justify", default: par.justify)
+
   [
     #set par(leading: leading)
     #set par(spacing: spacing)
+    #set par(justify: justify)
     #set par(first-line-indent: (amount: indent, all: true))
     #it
   ]
 }
 
 ///////////////////////////////////////////////////////////
+/// vanilla()
+///
 #let vanilla(
   margins: (left: 1in, right: 1in, top: 1in, bottom: 1in),
   base-font: "Libertinus Serif",
@@ -53,6 +51,7 @@
 ) = {
   ///////////////////////////////////////////////////////////
   // Set defaults
+  //
   styles.body = (
     (
       font: auto,
@@ -153,8 +152,8 @@
   }
 
   set text(
-    font: body-font,
-    size: body-size,
+    font: styles.body.font,
+    size: styles.body.size,
     top-edge: 1em,
     bottom-edge: "baseline",
   )
@@ -273,7 +272,7 @@
     },
   )
   show table.cell: it => {
-    par-single-spaced(justify: false, it)
+    body(spacing: "single", justify: false, it)
   }
 
   ///////////////////////////////////////////////////////////

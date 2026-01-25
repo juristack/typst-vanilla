@@ -1,5 +1,5 @@
 
-#import "@preview/vanilla:0.2.0": body, par-single-spaced, vanilla
+#import "@preview/vanilla:0.2.0": body, vanilla
 
 #show: vanilla.with(
   base-font: "Times New Roman",
