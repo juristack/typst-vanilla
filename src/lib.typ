@@ -112,13 +112,6 @@
 
   ///////////////////////////////////////////////////////////
   // Normalize text
-  set text(
-    font: base-font,
-    size: base-size,
-    top-edge: 1em,
-    bottom-edge: "baseline",
-  )
-
   if styles.body.font == auto {
     styles.body.font = base-font
   }
@@ -159,6 +152,16 @@
     styles.quote.size = base-size
   }
 
+  set text(
+    font: body-font,
+    size: body-size,
+    top-edge: 1em,
+    bottom-edge: "baseline",
+  )
+
+  ///////////////////////////////////////////////////////////
+  /// resolve-spacing
+  ///
   let resolve-spacing = spacing => {
     if spacing == "single" {
       return (.167em, .167em)
