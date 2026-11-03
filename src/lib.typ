@@ -6,7 +6,7 @@
   let (leading, spacing) = if spacing == "single" {
     (13em / 84, 13em / 84)
   } else if spacing == "double" {
-    (4em / 3, 4em / 3)
+    (1.293em, 1.293em)
   } else if type(spacing) == int {
     let multiple = spacing - 1
     if multiple < 0 {
@@ -156,7 +156,7 @@
     if spacing == "single" {
       return (13em / 84, 13em / 84)
     } else if spacing == "double" {
-      return (4em / 3, 4em / 3)
+      return (1.293em, 1.293em)
     } else if type(spacing) == int {
       let multiple = spacing - 1
       if multiple < 0 {
