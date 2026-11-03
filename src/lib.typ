@@ -6,7 +6,7 @@
   let (leading, spacing) = if spacing == "single" {
     (13em / 84, 13em / 84)
   } else if spacing == "double" {
-    (1.33em, 1.33em)
+    (4em / 3, 4em / 3)
   } else if type(spacing) == int {
     let multiple = spacing - 1
     if multiple < 0 {
@@ -156,7 +156,7 @@
     if spacing == "single" {
       return (13em / 84, 13em / 84)
     } else if spacing == "double" {
-      return (1.33em, 1.33em)
+      return (4em / 3, 4em / 3)
     } else if type(spacing) == int {
       let multiple = spacing - 1
       if multiple < 0 {
@@ -210,13 +210,13 @@
     #if counter(heading).get().len() == 1 {
       block(width: 100%, above: auto, below: styles.heading.after)[
         #set align(center)
-        #set par(leading: .167em, justify: false, first-line-indent: 0em)
+        #set par(leading: 13em / 84, justify: false, first-line-indent: 0em)
         #it.body
       ]
     } else {
       let indent = 0.5in * (counter(heading).get().len() - 1)
       block(inset: (left: indent), above: auto, below: styles.heading.after)[
-        #set par(leading: .167em, justify: false, first-line-indent: 0em)
+        #set par(leading: 13em / 84, justify: false, first-line-indent: 0em)
         #place(dx: -0.5in, counter(heading).display())
         #it.body
       ]
@@ -250,8 +250,8 @@
   // Blockquote
   show quote: it => {
     set text(size: styles.quote.size, top-edge: 1em, bottom-edge: "baseline")
-    set par(leading: .167em, justify: true)
-    set block(above: 1.33em, below: 1.33em)
+    set par(leading: 13em / 84, justify: true)
+    set block(above: 4em / 3, below: 4em / 3)
     pad(left: styles.quote.padding, right: styles.quote.padding, it.body)
   }
 
