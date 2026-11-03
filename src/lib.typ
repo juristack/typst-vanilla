@@ -4,7 +4,7 @@
 #let body(..style, it) = context {
   let spacing = style.at("spacing", default: false)
   let (leading, spacing) = if spacing == "single" {
-    (.167em, .167em)
+    (13em / 84, 13em / 84)
   } else if spacing == "double" {
     (1.33em, 1.33em)
   } else if type(spacing) == int {
@@ -154,7 +154,7 @@
   ///
   let resolve-spacing = (spacing, size) => {
     if spacing == "single" {
-      return (.167em, .167em)
+      return (13em / 84, 13em / 84)
     } else if spacing == "double" {
       return (1.33em, 1.33em)
     } else if type(spacing) == int {
