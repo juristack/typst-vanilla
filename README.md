@@ -42,7 +42,8 @@ The `vanilla` function accepts the following parameters. The `auto` defaults for
     - `font`: (default: `"Libertinus Serif"`),
     - `size`: (default: `12pt`),
     - `first-line-indent`: (default: `0in`),
-    - `spacing`: (default: `"single"`),
+    - `spacing`: (default: `"single"`; controls line spacing),
+    - `after`: (default: `0pt`; controls spacing after paragraphs),
     - `justify`: (default: `false`),
   - `heading`: Heading styles
     - `font`: (default: `auto`),
