@@ -177,14 +177,14 @@
 
   set par(
     leading: body-leading,
-    spacing: body-spacing,
+    spacing: styles.body.after + body-leading,
     justify: styles.body.justify,
     first-line-indent: (amount: styles.body.first-line-indent, all: true),
   )
 
   ///////////////////////////////////////////////////////////
   // Bullet list (single-spacing, 0.5in padding)
-  let (list-leading, list-spacing) = resolve-spacing(styles.list.spacing, styles.list.spacing)
+  let (list-leading, _) = resolve-spacing(styles.list.spacing, styles.list.spacing)
 
   set list(body-indent: 1em)
 
